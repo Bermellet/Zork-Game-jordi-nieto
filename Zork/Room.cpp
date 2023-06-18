@@ -10,7 +10,7 @@ Room::~Room() {
 }
 
 void Room::Setup() {
-	type = ROOM;
+	type = EntityType::ROOM;
 
 	ptrNeighborNorth = nullptr;
 	ptrNeighborSouth = nullptr;
@@ -23,4 +23,13 @@ void Room::SetNeighbors(Room* ptrNorth, Room* ptrSouth, Room* ptrEast, Room* ptr
 	ptrNeighborSouth = ptrSouth;
 	ptrNeighborEast = ptrEast;
 	ptrNeighborWest = ptrWest;
+}
+
+void Room::OutputNeighbors() {
+	cout << "From " << name << " you can go to: ";
+	if (ptrNeighborNorth != nullptr) { cout << "\n\t- North"; }
+	if (ptrNeighborSouth != nullptr) { cout << "\n\t- South"; }
+	if (ptrNeighborEast != nullptr) { cout << "\n\t- East"; }
+	if (ptrNeighborWest != nullptr) { cout << "\n\t- West"; }
+	cout << endl;
 }

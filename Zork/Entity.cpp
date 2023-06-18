@@ -2,7 +2,7 @@
 
 Entity::Entity(const string& name /*= string()*/, const string& description /*= string()*/) :
 	name(name), description(description) {
-	type = ITEM;
+	type = EntityType::ITEM;
 }
 
 Entity::~Entity() {

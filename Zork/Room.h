@@ -15,7 +15,7 @@ public:
 	~Room();
 	void Setup();
 	void SetNeighbors(Room* ptrNorth, Room* ptrSouth, Room* ptrEast, Room* ptrWest);
-
+	void OutputNeighbors();
 public:
 	Room* ptrNeighborNorth;
 	Room* ptrNeighborSouth;
