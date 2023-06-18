@@ -8,7 +8,11 @@ class Player
 {
 public:
 	Player();
+	Player(Room* room);
 	~Player();
+
+	bool CanMove(MoveOptions move);
+	void Move(MoveOptions move);
 
 private:
 	Room* currentRoom;

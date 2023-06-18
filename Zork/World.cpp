@@ -8,8 +8,42 @@ World::~World() {
 
 }
 
-void World::Run() {
+string World::Run(vector<string>& actions) {
+	if (Equals(actions.front(), "north")) {
+		if (player->CanMove(MoveOptions::NORTH)) {
+			player->Move(MoveOptions::NORTH);
+		}
+		else {
+			return "You cannot move North";
+		}
+	}
+	else if (Equals(actions.front(), "south")) {
+		if (player->CanMove(MoveOptions::SOUTH)) {
+			player->Move(MoveOptions::SOUTH);
+		}
+		else {
+			return "You cannot move South";
+		}
+	}
+	else if (Equals(actions.front(), "east")) {
+		if (player->CanMove(MoveOptions::EAST)) {
+			player->Move(MoveOptions::EAST);
+		}
+		else {
+			return "You cannot move East";
+		}
+	}
+	else if (Equals(actions.front(), "west")) {
+		if (player->CanMove(MoveOptions::WEST)) {
+			player->Move(MoveOptions::WEST);
+		}
+		else {
+			return "You cannot move West";
+		}
+	}
 
+	actions.erase(actions.begin());
+	return "";
 }
 
 void World::SetupWorld() {
@@ -40,6 +74,9 @@ void World::SetupWorld() {
 	entities.push_back(room6);
 	entities.push_back(room7);
 	entities.push_back(room8);
+
+	// Player
+	player = new Player(room1);
 
 	// Items
 

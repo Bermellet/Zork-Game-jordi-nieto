@@ -7,6 +7,13 @@
 
 #include "Entity.h"
 
+enum class MoveOptions {
+	NORTH,
+	SOUTH,
+	EAST,
+	WEST
+};
+
 class Room : public Entity
 {
 public:
@@ -16,7 +23,10 @@ public:
 	void Setup();
 	void SetNeighbors(Room* ptrNorth, Room* ptrSouth, Room* ptrEast, Room* ptrWest);
 	void OutputNeighbors();
-public:
+	bool CanMove(MoveOptions move);
+	Room* Move(MoveOptions move);
+
+private:
 	Room* ptrNeighborNorth;
 	Room* ptrNeighborSouth;
 	Room* ptrNeighborEast;

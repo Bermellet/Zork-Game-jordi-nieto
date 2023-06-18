@@ -33,3 +33,35 @@ void Room::OutputNeighbors() {
 	if (ptrNeighborWest != nullptr) { cout << "\n\t- West"; }
 	cout << endl;
 }
+
+bool Room::CanMove(MoveOptions move) {
+	if (move == MoveOptions::NORTH && ptrNeighborNorth != nullptr) {
+		return true;
+	}
+	if (move == MoveOptions::SOUTH && ptrNeighborSouth != nullptr) {
+		return true;
+	}
+	if (move == MoveOptions::EAST && ptrNeighborEast != nullptr) {
+		return true;
+	}
+	if (move == MoveOptions::WEST && ptrNeighborWest != nullptr) {
+		return true;
+	}
+	return false;
+}
+
+Room* Room::Move(MoveOptions move) {
+	if (move == MoveOptions::NORTH) {
+		return ptrNeighborNorth;
+	}
+	if (move == MoveOptions::SOUTH) {
+		return ptrNeighborSouth;
+	}
+	if (move == MoveOptions::EAST) {
+		return ptrNeighborEast;
+	}
+	if (move == MoveOptions::WEST) {
+		return ptrNeighborWest;
+	}
+	return nullptr;
+}

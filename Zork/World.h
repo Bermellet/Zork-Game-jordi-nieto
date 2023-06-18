@@ -4,9 +4,11 @@
 
 #include <string>
 #include <list>
+#include <vector>
 
 #include "Entity.h"
 #include "Player.h"
+#include "Utils.h"
 
 using namespace std;
 
@@ -15,7 +17,7 @@ class World
 public:
 	World();
 	~World();
-	void Run();
+	string Run(vector<string>& actions);
 
 private:
 	void SetupWorld();

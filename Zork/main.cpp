@@ -13,7 +13,7 @@ int main() {
 
 	char splitChar = ' ';
 
-	string userInput;
+	string userInput, result;
 	vector<string> tokens;
 	tokens.reserve(10);
 	bool running = true;
@@ -23,7 +23,11 @@ int main() {
 		getline(cin, userInput);
 		istringstream split(userInput);
 		for (string token; getline(split, token, splitChar); ) {
-			if (!token.empty()) { tokens.push_back(Trim(token)); }
+			if (!token.empty()) {
+				Trim(token);
+				ToLower(token);
+				tokens.push_back(token);
+			}
 		}
 
 		// Process tokens
@@ -32,7 +36,8 @@ int main() {
 				running = false;
 				break;
 			}
-
+			result = world.Run(tokens);
+			cout << result << endl;
 		}
 
 		tokens.clear();
