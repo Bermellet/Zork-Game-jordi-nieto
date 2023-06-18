@@ -1,4 +1,3 @@
-#include <iostream>
 #include "World.h"
 
 World::World() {
