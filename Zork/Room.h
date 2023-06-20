@@ -25,6 +25,7 @@ public:
 	void OutputNeighbors();
 	bool CanMove(MoveOptions move);
 	Room* Move(MoveOptions move);
+	bool CanContainEntities() const override;
 
 private:
 	Room* ptrNeighborNorth;

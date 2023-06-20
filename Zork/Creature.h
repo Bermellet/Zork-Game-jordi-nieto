@@ -21,13 +21,13 @@ public:
 	void Pick(Item* item);
 	void Drop(Item* item);
 	bool isAlive();
+	bool CanContainEntities() const override;
 
 	vector<string> getInventoryItemsNames();
 	Item* getInventoryItem(string name);
 
 protected:
 	Room* currentRoom;
-	list<Item*> inventory;
 
 	int hp;
 	int max_hp;

@@ -2,8 +2,10 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <iostream>
 #include <string>
 #include <list>
+#include <algorithm>
 
 using namespace std;
 
@@ -20,18 +22,24 @@ public:
 	Entity(const string& name, const string& description, Entity* containedBy);
 	~Entity();
 
+	void AddEntity(Entity* entity);
+	void RemoveEntity(Entity* entity);
+	bool ContainsEntity(Entity* entity) const;
+
 	EntityType GetType() const;
 	string GetName() const;
 	string GetDescription() const;
+	virtual bool CanContainEntities() const;
 
-public:
-	list<Entity*> contains;
-	Entity* containedBy;
+	bool operator==(const Entity& e) const;
 
 protected:
-	EntityType type;
+	EntityType entityType;
 	string name;
 	string description;
+
+	list<Entity*> contains;
+	Entity* containedBy;
 };
 
 #endif // !ENTITY_H

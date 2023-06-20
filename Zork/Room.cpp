@@ -11,7 +11,7 @@ Room::~Room() {
 }
 
 void Room::Setup() {
-	type = EntityType::ROOM;
+	entityType = EntityType::ROOM;
 
 	ptrNeighborNorth = nullptr;
 	ptrNeighborSouth = nullptr;
@@ -65,4 +65,8 @@ Room* Room::Move(MoveOptions move) {
 		return ptrNeighborWest;
 	}
 	return nullptr;
+}
+
+bool Room::CanContainEntities() const {
+	return true;
 }

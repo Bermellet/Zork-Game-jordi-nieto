@@ -6,11 +6,11 @@ Creature::Creature(string name, string description, Room* currentRoom) :
 	this->currentRoom = currentRoom;
 	this->max_hp = 100;
 	this->hp = max_hp;
-	this->type = EntityType::CREATURE;
+	this->entityType = EntityType::CREATURE;
 }
 
 Creature::~Creature() {
-	for (Entity* e: inventory) {
+	for (Entity* e: contains) {
 		if (e != nullptr) {
 			delete e;
 		}
@@ -18,27 +18,31 @@ Creature::~Creature() {
 }
 
 void Creature::Pick(Item* item) {
-	item->containedBy = this; // TODO: check if was in another container?
-	inventory.push_back(item);
-	cout << "\n" << item->GetName() << "has been added to your inventory.\n";
+	AddEntity(item);
+	cout << "\n" << item->GetName() << " has been added to your inventory.\n";
 }
 
 void Creature::Drop(Item* item) {
-	item->containedBy = currentRoom;
-	currentRoom->contains.push_back(item);
-	inventory.erase(remove(inventory.begin(), inventory.end(), item));
-	cout << "\n" << item->GetName() << "dropped to the current room.\n";
+	currentRoom->AddEntity(item);
+	cout << "\n" << item->GetName() << " dropped to the current room.\n";
 }
 
 bool Creature::isAlive() {
 	return hp > 0;
 }
 
+bool Creature::CanContainEntities() const {
+	return true;
+}
+
 vector<string> Creature::getInventoryItemsNames() {
 	vector<string> result;
 
-	for (list<Item*>::iterator it = inventory.begin(); it != inventory.end(); it++) {
-		result.push_back((*it)->GetName());
+	for (list<Entity*>::iterator it = contains.begin(); it != contains.end(); it++) {
+		Entity* entity = (*it);
+		if (entity->GetType() == EntityType::ITEM) {
+			result.push_back(entity->GetName());
+		}
 	}
 
 	return result;
@@ -46,10 +50,12 @@ vector<string> Creature::getInventoryItemsNames() {
 
 Item* Creature::getInventoryItem(string name) {
 
-	for (list<Item*>::iterator it = inventory.begin(); it != inventory.end(); it++) {
-		Item* item = (*it);
-		if (Equals(item->GetName(), name)) {
-			return item;
+	for (list<Entity*>::iterator it = contains.begin(); it != contains.end(); it++) {
+		Entity* entity = (*it);
+		if (entity->GetType() == EntityType::ITEM) {
+			if (Equals(entity->GetName(), name)) {
+				return (Item*)entity;
+			}
 		}
 	}
 
