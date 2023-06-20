@@ -1,15 +1,9 @@
 #include "Player.h"
 
-Player::Player() {
-	currentRoom = nullptr;
-}
-
-Player::Player(Room* room) {
-	currentRoom = room;
-}
-
-Player::~Player() {
-
+Player::Player(string name, string description, Room* currentRoom) :
+	Creature(name, description, currentRoom)
+{
+	this->type = EntityType::PLAYER;
 }
 
 bool Player::CanMove(MoveOptions move) {

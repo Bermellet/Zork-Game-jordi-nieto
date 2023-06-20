@@ -18,7 +18,7 @@ class Room : public Entity
 {
 public:
 	//Room();
-	Room(const string& name = string(), const string& description = string());
+	Room(const string& name, const string& description);
 	~Room();
 	void Setup();
 	void SetNeighbors(Room* ptrNorth, Room* ptrSouth, Room* ptrEast, Room* ptrWest);

@@ -1,7 +1,8 @@
 #include "Room.h"
 
-Room::Room(const string& name /*= string()*/, const string& description /*= string()*/) :
-Entity(name, description) {
+Room::Room(const string& name = string(), const string& description = string()) :
+	Entity(name, description, nullptr)
+{
 	Setup();
 }
 

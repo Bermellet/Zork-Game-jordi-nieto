@@ -5,45 +5,57 @@ World::World() {
 }
 
 World::~World() {
-
+	// Free memory
+	for (Entity* entity : entities) {
+		if (entity != nullptr) {
+			delete entity;
+		}
+	}
+	if (player != nullptr) {
+		delete player;
+	}
 }
 
 string World::Run(vector<string>& actions) {
-	if (Equals(actions.front(), "north")) {
+	string status = "";
+	if (Equals(actions.front(), "north") || Equals(actions.front(), "n")) {
 		if (player->CanMove(MoveOptions::NORTH)) {
 			player->Move(MoveOptions::NORTH);
 		}
 		else {
-			return "You cannot move North";
+			status = "You cannot move North";
 		}
 	}
-	else if (Equals(actions.front(), "south")) {
+	else if (Equals(actions.front(), "south") || Equals(actions.front(), "s")) {
 		if (player->CanMove(MoveOptions::SOUTH)) {
 			player->Move(MoveOptions::SOUTH);
 		}
 		else {
-			return "You cannot move South";
+			status = "You cannot move South";
 		}
 	}
-	else if (Equals(actions.front(), "east")) {
+	else if (Equals(actions.front(), "east") || Equals(actions.front(), "e")) {
 		if (player->CanMove(MoveOptions::EAST)) {
 			player->Move(MoveOptions::EAST);
 		}
 		else {
-			return "You cannot move East";
+			status = "You cannot move East";
 		}
 	}
-	else if (Equals(actions.front(), "west")) {
+	else if (Equals(actions.front(), "west") || Equals(actions.front(), "w")) {
 		if (player->CanMove(MoveOptions::WEST)) {
 			player->Move(MoveOptions::WEST);
 		}
 		else {
-			return "You cannot move West";
+			status = "You cannot move West";
 		}
+	}
+	else {
+		status = "Unknown action";
 	}
 
 	actions.erase(actions.begin());
-	return "";
+	return status;
 }
 
 void World::SetupWorld() {
@@ -76,7 +88,7 @@ void World::SetupWorld() {
 	entities.push_back(room8);
 
 	// Player
-	player = new Player(room1);
+	player = new Player("Player", "This is you", room1);
 
 	// Items
 
