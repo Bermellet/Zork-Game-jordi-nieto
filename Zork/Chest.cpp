@@ -14,6 +14,6 @@ bool Chest::CanContainEntities() const {
 	return true;
 }
 
-bool Chest::CanBePicked() {
+bool Chest::CanBePicked() const {
 	return false;
 }

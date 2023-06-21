@@ -17,13 +17,13 @@ public:
 	Item(string name, string description, Entity* containedBy, ItemType itemType);
 	~Item();
 	
-	virtual bool CanBePicked();
+	virtual bool CanBePicked() const;
 
 public:
 	ItemType itemType;
 	
 private:
-	bool IsContainer();
+	bool IsContainer() const;
 };
 
 

@@ -1,6 +1,9 @@
 #include "World.h"
 
 World::World() {
+	this->finished = false;
+	this->gameOver = false;
+
 	SetupWorld();
 }
 
@@ -17,57 +20,106 @@ World::~World() {
 }
 
 string World::Run(vector<string>& actions) {
-	string status = "";
-	if (Equals(actions.front(), "north") || Equals(actions.front(), "n")) {
-		if (player->CanMove(MoveOptions::NORTH)) {
-			player->Move(MoveOptions::NORTH);
-		}
-		else {
-			status = "You cannot move North";
-		}
-	}
-	else if (Equals(actions.front(), "south") || Equals(actions.front(), "s")) {
-		if (player->CanMove(MoveOptions::SOUTH)) {
-			player->Move(MoveOptions::SOUTH);
-		}
-		else {
-			status = "You cannot move South";
-		}
-	}
-	else if (Equals(actions.front(), "east") || Equals(actions.front(), "e")) {
-		if (player->CanMove(MoveOptions::EAST)) {
-			player->Move(MoveOptions::EAST);
-		}
-		else {
-			status = "You cannot move East";
-		}
-	}
-	else if (Equals(actions.front(), "west") || Equals(actions.front(), "w")) {
-		if (player->CanMove(MoveOptions::WEST)) {
-			player->Move(MoveOptions::WEST);
-		}
-		else {
-			status = "You cannot move West";
-		}
-	}
-	else {
-		status = "Unknown action";
-	}
+	// TODO: Refactor duplicate code
+	string status = "Sorry, I could not understand you";
 
-	actions.erase(actions.begin());
+	//for (string action : actions) {
+	/*for (int i = 0; i < actions.size(); i++) {
+		string action = actions[i];*/
+
+	//vector<string>::iterator it = actions.begin();
+	size_t i = 0;
+	string action = actions[i];
+
+		if (!IsValidCommand(action)) {
+			status = "Unknown action. You can see the options with: help";
+		}
+		else {
+			if (Equals(action, "help")) {
+
+			}
+			// Verb actions
+			else if (IsCommandActions(action)) {
+				if (actions.size() > i) {
+					string next_action = actions[++i];
+
+					if (Equals(action, "move") || Equals(action, "go")) {
+						if (IsCommandMovement(next_action)) {
+							status = player->Move(next_action);
+						}
+					}
+					else if (Equals(action, "look")) {
+						if (Equals(next_action, "room") || Equals(next_action, "around")) {
+							status = player->GetCurrentRoom()->GetContainsEntitiesInfo();
+						}
+						else if (Equals(next_action, "path") || Equals(next_action, "paths")) {
+							status = player->GetCurrentRoom()->GetNeighbors();
+						}
+						else if (Equals(next_action, "inventory") || Equals(next_action, "items")) {
+							status = player->GetInventoryItemsNames();
+						}
+						/*else if (itemname) {
+							ITEM_DETAILS
+						}*/
+					}
+					else if (Equals(action, "open")) {
+						if (Equals(next_action, "inventory") || Equals(next_action, "items")) {
+							status = player->GetInventoryItemsNames();
+						}
+						else if (Equals(next_action, "chest")) {
+							// TODO
+						}
+					}
+					else if (Equals(action, "use")) {
+						// TODO: item
+					}
+					else if (Equals(action, "pick") || Equals(action, "take")) {
+						// TODO: item
+					}
+					else if (Equals(action, "drop")) {
+						// TODO: item
+					}
+				}
+			}
+
+			// Entities
+			else if (Equals(action, "room") || Equals(action, "around")) {
+				status = player->GetCurrentRoom()->GetContainsEntitiesInfo();
+			}
+			else if (Equals(action, "path") || Equals(action, "paths")) {
+				status = player->GetCurrentRoom()->GetNeighbors();
+			}
+			else if (Equals(action, "inventory") || Equals(action, "items")) {
+				status = player->GetInventoryItemsNames();
+			}
+			/*else if (itemname) {
+				ITEM_DETAILS
+			}*/
+			else if (IsCommandMovement(action)) {
+				status = player->Move(action);
+			}
+		}
+	//}
+
+	//actions.erase(actions.begin());
 	return status;
 }
 
 void World::SetupWorld() {
+	// Actions list
+	commandActions = {"help", "move", "go", "look", "open", "use", "pick", "take", "drop"};
+	commandObjectives = {"room", "around", "path", "paths" "inventory", "items"};
+	commandMovements = {"north", "south", "east", "west", "n", "s", "e", "w"};
+
 	// Rooms
-	Room* room1 = new Room("Forest clearing", "");
-	Room* room2 = new Room("Flower path", "");
-	Room* room3 = new Room("Rocky cliff", "");
-	Room* room4 = new Room("Old campsite", "");
-	Room* room5 = new Room("Forest", "");
-	Room* room6 = new Room("Cave entrance", "");
-	Room* room7 = new Room("Stalactites room", "");
-	Room* room8 = new Room("Boss room", "");
+	Room* room1 = new Room("Forest clearing", "A sunny clearing covered by trees. You can see a path leading south");
+	Room* room2 = new Room("Flower path", "Colorful flowers grow around the path you are following. A crossing divides it into different routes");
+	Room* room3 = new Room("Rocky cliff", "Many rockslides have build a precipice that cannot be traversed. You can see a path leading south");
+	Room* room4 = new Room("Old campsite", "Camping tents are visibly torn apart, its contents unusable. A chest has survived whatever happened here");
+	Room* room5 = new Room("Forest", "Enormous pine trees seem to reach up the sky. There is a cave on the east");
+	Room* room6 = new Room("Cave entrance", "The cave is very dark. Luckily, there is a lit torch on the wall");
+	Room* room7 = new Room("Stalactites room", "The cave keeps descending into a room full of stalactites. Its humidity reflect dim reflections");
+	Room* room8 = new Room("Boss room", "The cave widens into an area full of green moss. Its fluorescent glow constrasts with a stone animal in the center of the room");
 
 	room1->SetNeighbors(nullptr, room2, nullptr, nullptr);
 	room2->SetNeighbors(room1, room5, nullptr, room3);
@@ -87,9 +139,33 @@ void World::SetupWorld() {
 	entities.push_back(room7);
 	entities.push_back(room8);
 
-	// Player
+	// Player & Creatures
 	player = new Player("Player", "This is you", room1);
-
+	Creature* stoneCreature = new Creature("Creature statue", "A strange statue of a creature resembling a big bird. You can feel the piercing gaze on its eyes", room8);
+	
 	// Items
+	Chest* chest1 = new Chest("Chest", "An ancient wooden chest. It's a miracle it has survived, given its poor condition", room4);
+	Item* item1 = new Item("Yellow potion", "A potion with yellow glow. Its label is mangled but you can read something abou stone", chest1, ItemType::ITEM);
+	Item* item2 = new Item("Lit torch", "A burning torch. Useful to brighten up your path", room6, ItemType::ITEM);
 
+	// Story?
+
+}
+
+bool World::IsValidCommand(string& command) {
+	return IsCommandActions(command)
+		|| IsCommandObjectives(command)
+		|| IsCommandMovement(command);
+}
+
+bool World::IsCommandActions(string& command) {
+	return commandActions.find(command) != commandActions.end();
+}
+
+bool World::IsCommandObjectives(string& command) {
+	return commandObjectives.find(command) != commandObjectives.end();
+}
+
+bool World::IsCommandMovement(string& command) {
+	return commandMovements.find(command) != commandMovements.end();
 }

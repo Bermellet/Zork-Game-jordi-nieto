@@ -11,7 +11,8 @@ public:
 	Player(string name, string description, Room* currentRoom);
 
 	bool CanMove(MoveOptions move);
-	void Move(MoveOptions move);
+	string Move(MoveOptions move);
+	string Move(string move);
 
 private:
 

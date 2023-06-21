@@ -26,29 +26,23 @@ void Room::SetNeighbors(Room* ptrNorth, Room* ptrSouth, Room* ptrEast, Room* ptr
 	ptrNeighborWest = ptrWest;
 }
 
-void Room::OutputNeighbors() {
-	cout << "From " << name << " you can go to: ";
-	if (ptrNeighborNorth != nullptr) { cout << "\n\t- North"; }
-	if (ptrNeighborSouth != nullptr) { cout << "\n\t- South"; }
-	if (ptrNeighborEast != nullptr) { cout << "\n\t- East"; }
-	if (ptrNeighborWest != nullptr) { cout << "\n\t- West"; }
-	cout << endl;
+string Room::GetNeighbors() {
+	ostringstream oss;
+
+	oss << "From " << name << " you can go to: ";
+	if (ptrNeighborNorth != nullptr) { oss << "\n\t- North"; }
+	if (ptrNeighborSouth != nullptr) { oss << "\n\t- South"; }
+	if (ptrNeighborEast != nullptr) { oss << "\n\t- East"; }
+	if (ptrNeighborWest != nullptr) { oss << "\n\t- West"; }
+
+	return oss.str();
 }
 
 bool Room::CanMove(MoveOptions move) {
-	if (move == MoveOptions::NORTH && ptrNeighborNorth != nullptr) {
-		return true;
-	}
-	if (move == MoveOptions::SOUTH && ptrNeighborSouth != nullptr) {
-		return true;
-	}
-	if (move == MoveOptions::EAST && ptrNeighborEast != nullptr) {
-		return true;
-	}
-	if (move == MoveOptions::WEST && ptrNeighborWest != nullptr) {
-		return true;
-	}
-	return false;
+	return (move == MoveOptions::NORTH && ptrNeighborNorth != nullptr)
+		|| (move == MoveOptions::SOUTH && ptrNeighborSouth != nullptr)
+		|| (move == MoveOptions::EAST && ptrNeighborEast != nullptr)
+		|| (move == MoveOptions::WEST && ptrNeighborWest != nullptr);
 }
 
 Room* Room::Move(MoveOptions move) {
@@ -69,4 +63,59 @@ Room* Room::Move(MoveOptions move) {
 
 bool Room::CanContainEntities() const {
 	return true;
+}
+
+string Room::GetInformation() const {
+	ostringstream oss;
+
+	oss << "Room " << name << ": " << description;
+	if (contains.size() > 0) {
+		oss << "\n\tContains entities:";
+		for (Entity* e : contains) {
+			oss << "\n\t- " << e->GetName();
+		}
+	}
+
+	return oss.str();
+}
+
+string Room::GetContainsEntitiesInfo() const {
+	return ""; // TODO
+}
+
+// Global enum class conversions
+MoveOptions ParseMoveOption(string moveOption) {
+	if (Equals(moveOption, "north") || Equals(moveOption, "n")) {
+		return MoveOptions::NORTH;
+	}
+	else if (Equals(moveOption, "south") || Equals(moveOption, "s")) {
+		return MoveOptions::SOUTH;
+	}
+	else if (Equals(moveOption, "east") || Equals(moveOption, "e")) {
+		return MoveOptions::EAST;
+	}
+	else if (Equals(moveOption, "west") || Equals(moveOption, "w")) {
+		return MoveOptions::WEST;
+	}
+	else {
+		return MoveOptions::NORTH;
+	}
+}
+
+string ToStringMoveOption(MoveOptions moveOption) {
+	if (moveOption == MoveOptions::NORTH) {
+		return "north";
+	}
+	else if (moveOption == MoveOptions::SOUTH) {
+		return "south";
+	}
+	else if (moveOption == MoveOptions::EAST) {
+		return "east";
+	}
+	else if (moveOption == MoveOptions::WEST) {
+		return "west";
+	}
+	else {
+		return "";
+	}
 }

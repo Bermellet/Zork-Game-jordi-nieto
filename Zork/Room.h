@@ -2,10 +2,8 @@
 #ifndef ROOM_H
 #define ROOM_H
 
-#include <iostream>
-#include <string>
-
 #include "Entity.h"
+#include "Utils.h"
 
 enum class MoveOptions {
 	NORTH,
@@ -13,6 +11,8 @@ enum class MoveOptions {
 	EAST,
 	WEST
 };
+string ToStringMoveOption(MoveOptions moveOption);
+MoveOptions ParseMoveOption(string moveOption);
 
 class Room : public Entity
 {
@@ -22,10 +22,13 @@ public:
 	~Room();
 	void Setup();
 	void SetNeighbors(Room* ptrNorth, Room* ptrSouth, Room* ptrEast, Room* ptrWest);
-	void OutputNeighbors();
+	string GetNeighbors();
 	bool CanMove(MoveOptions move);
 	Room* Move(MoveOptions move);
+
 	bool CanContainEntities() const override;
+	string GetInformation() const override;
+	string GetContainsEntitiesInfo() const;
 
 private:
 	Room* ptrNeighborNorth;

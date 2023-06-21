@@ -10,6 +10,17 @@ bool Player::CanMove(MoveOptions move) {
 	return currentRoom->CanMove(move);
 }
 
-void Player::Move(MoveOptions move) {
+string Player::Move(MoveOptions move) {
 	currentRoom = currentRoom->Move(move);
+	return currentRoom->GetInformation();
+}
+
+string Player::Move(string move) {
+	MoveOptions moveOption = ParseMoveOption(move);
+	if (this->CanMove(moveOption)) {
+		return this->Move(moveOption);
+	}
+	else {
+		return "You cannot move " + ToStringMoveOption(moveOption);
+	}
 }

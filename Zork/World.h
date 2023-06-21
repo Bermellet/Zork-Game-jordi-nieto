@@ -5,10 +5,12 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <set>
 
+#include "Utils.h"
 #include "Entity.h"
 #include "Player.h"
-#include "Utils.h"
+#include "Chest.h"
 
 using namespace std;
 
@@ -21,10 +23,25 @@ public:
 
 private:
 	void SetupWorld();
+	void Look();
+	void Move();
+
+	bool IsValidCommand(string& command);
+	bool IsCommandActions(string& command);
+	bool IsCommandObjectives(string& command);
+	bool IsCommandMovement(string& command);
+
+public:
+	bool finished;
+	bool gameOver;
 
 private:
 	list<Entity*> entities;
 	Player* player;
+	// Actions list
+	set<string> commandActions;
+	set<string> commandObjectives;
+	set<string> commandMovements;
 };
 
 #endif // !WORLD_H

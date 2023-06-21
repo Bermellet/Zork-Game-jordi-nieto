@@ -3,6 +3,7 @@
 #define ENTITY_H
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <list>
 #include <algorithm>
@@ -30,6 +31,7 @@ public:
 	string GetName() const;
 	string GetDescription() const;
 	virtual bool CanContainEntities() const;
+	virtual string GetInformation() const;
 
 	bool operator==(const Entity& e) const;
 

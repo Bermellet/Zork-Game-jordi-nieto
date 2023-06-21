@@ -2,9 +2,7 @@
 #ifndef CREATURE_H
 #define CREATURE_H
 
-#include <iostream>
 #include <vector>
-#include <string>
 
 #include "Entity.h"
 #include "Room.h"
@@ -23,8 +21,9 @@ public:
 	bool isAlive();
 	bool CanContainEntities() const override;
 
-	vector<string> getInventoryItemsNames();
-	Item* getInventoryItem(string name);
+	string GetInventoryItemsNames();
+	Item* GetInventoryItem(string name);
+	Room* GetCurrentRoom();
 
 protected:
 	Room* currentRoom;

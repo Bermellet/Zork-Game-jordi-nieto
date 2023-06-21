@@ -11,10 +11,10 @@ Item::~Item() {
 
 }
 
-bool Item::CanBePicked() {
+bool Item::CanBePicked() const {
 	return true;
 }
 
-bool Item::IsContainer() {
+bool Item::IsContainer() const {
 	return this->itemType == ItemType::CONTAINER;
 }

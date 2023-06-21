@@ -65,6 +65,23 @@ bool Entity::CanContainEntities() const {
 	return false;
 }
 
+string Entity::GetInformation() const {
+	ostringstream oss;
+
+	oss << "Entity " << name << ": " << description;
+	if (containedBy != nullptr) {
+		oss << "\n\tIs inside " << containedBy->GetName();
+	}
+	if (contains.size() > 0) {
+		oss << "\n\tContains entities:";
+		for (Entity* e : contains) {
+			oss << "\n\t- " << e->GetName();
+		}
+	}
+
+	return oss.str();
+}
+
 bool Entity::operator==(const Entity& e) const {
 	return entityType == e.entityType && name == e.name && description == e.description;
 }

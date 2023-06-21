@@ -35,20 +35,21 @@ bool Creature::CanContainEntities() const {
 	return true;
 }
 
-vector<string> Creature::getInventoryItemsNames() {
-	vector<string> result;
+string Creature::GetInventoryItemsNames() {
+	ostringstream oss;
 
+	oss << "The items on " << name << "'s inventory are:";
 	for (list<Entity*>::iterator it = contains.begin(); it != contains.end(); it++) {
 		Entity* entity = (*it);
 		if (entity->GetType() == EntityType::ITEM) {
-			result.push_back(entity->GetName());
+			oss << "\n\t- " << entity->GetName();
 		}
 	}
 
-	return result;
+	return oss.str();
 }
 
-Item* Creature::getInventoryItem(string name) {
+Item* Creature::GetInventoryItem(string name) {
 
 	for (list<Entity*>::iterator it = contains.begin(); it != contains.end(); it++) {
 		Entity* entity = (*it);
@@ -60,4 +61,8 @@ Item* Creature::getInventoryItem(string name) {
 	}
 
 	return nullptr;
+}
+
+Room* Creature::GetCurrentRoom() {
+	return currentRoom;
 }

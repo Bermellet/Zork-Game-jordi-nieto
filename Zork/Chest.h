@@ -4,13 +4,14 @@
 
 #include "Item.h"
 
-class Chest : Item
+class Chest : public Item
 {
+public:
 	Chest(string name, string description, Entity* containedBy);
 	~Chest();
 
 	bool CanContainEntities() const override;
-	bool CanBePicked() override;
+	bool CanBePicked() const override;
 };
 
 
