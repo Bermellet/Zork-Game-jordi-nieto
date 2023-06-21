@@ -49,6 +49,30 @@ bool Entity::ContainsEntity(Entity* entity) const {
 	}
 }
 
+bool Entity::ContainsEntity(string& entity) const {
+	if (CanContainEntities()) {
+		list<Entity*>::const_iterator it = find_if(contains.begin(), contains.end(), [&entity](const Entity* obj) { return obj->GetName() == entity; });
+		return it != contains.end();
+	}
+	else {
+		cout << this->GetName() << " cannot hold entities!\n";
+		return false;
+	}
+}
+
+Entity* Entity::FindEntity(string& entity) const {
+	if (CanContainEntities()) {
+		list<Entity*>::const_iterator it = find_if(contains.begin(), contains.end(), [&entity](const Entity* obj) { return obj->GetName() == entity; });
+		if (it != contains.end()) {
+			return *it;
+		}
+	}
+	else {
+		cout << this->GetName() << " cannot hold entities!\n";
+	}
+	return nullptr;
+}
+
 EntityType Entity::GetType() const {
 	return entityType;
 }

@@ -22,13 +22,12 @@ public:
 	~Room();
 	void Setup();
 	void SetNeighbors(Room* ptrNorth, Room* ptrSouth, Room* ptrEast, Room* ptrWest);
-	string GetNeighbors();
 	bool CanMove(MoveOptions move);
 	Room* Move(MoveOptions move);
 
 	bool CanContainEntities() const override;
 	string GetInformation() const override;
-	string GetContainsEntitiesInfo() const;
+	string GetNeighbors() const;
 
 private:
 	Room* ptrNeighborNorth;

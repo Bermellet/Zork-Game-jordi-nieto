@@ -18,13 +18,18 @@ Creature::~Creature() {
 }
 
 void Creature::Pick(Item* item) {
-	AddEntity(item);
-	cout << "\n" << item->GetName() << " has been added to your inventory.\n";
+	if (item->CanBePicked()) {
+		AddEntity(item);
+		cout << "\n" << item->GetName() << " has been added to your inventory\n";
+	}
+	else {
+		cout << "\n" << item->GetName() << " cannot be picked up\n";
+	}
 }
 
 void Creature::Drop(Item* item) {
 	currentRoom->AddEntity(item);
-	cout << "\n" << item->GetName() << " dropped to the current room.\n";
+	cout << "\n" << item->GetName() << " dropped to the current room\n";
 }
 
 bool Creature::isAlive() {
@@ -38,12 +43,19 @@ bool Creature::CanContainEntities() const {
 string Creature::GetInventoryItemsNames() {
 	ostringstream oss;
 
-	oss << "The items on " << name << "'s inventory are:";
+	bool first = true;
 	for (list<Entity*>::iterator it = contains.begin(); it != contains.end(); it++) {
 		Entity* entity = (*it);
 		if (entity->GetType() == EntityType::ITEM) {
+			if (first) {
+				first = !first;
+				oss << "The items on " << name << "'s inventory are:";
+			}
 			oss << "\n\t- " << entity->GetName();
 		}
+	}
+	if (first) {
+		oss << name << "'s inventory is empty";
 	}
 
 	return oss.str();

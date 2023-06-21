@@ -26,6 +26,8 @@ public:
 	void AddEntity(Entity* entity);
 	void RemoveEntity(Entity* entity);
 	bool ContainsEntity(Entity* entity) const;
+	bool ContainsEntity(string& entity) const;
+	Entity* FindEntity(string& entity) const;
 
 	EntityType GetType() const;
 	string GetName() const;

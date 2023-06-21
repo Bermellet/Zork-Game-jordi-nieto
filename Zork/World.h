@@ -26,6 +26,7 @@ private:
 	void Look();
 	void Move();
 
+	string buildHelp();
 	bool IsValidCommand(string& command);
 	bool IsCommandActions(string& command);
 	bool IsCommandObjectives(string& command);

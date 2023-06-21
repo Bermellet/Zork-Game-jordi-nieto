@@ -20,95 +20,116 @@ World::~World() {
 }
 
 string World::Run(vector<string>& actions) {
-	// TODO: Refactor duplicate code
-	string status = "Sorry, I could not understand you";
-
-	//for (string action : actions) {
-	/*for (int i = 0; i < actions.size(); i++) {
-		string action = actions[i];*/
-
-	//vector<string>::iterator it = actions.begin();
 	size_t i = 0;
 	string action = actions[i];
+	string status = "Sorry, I could not understand you";
 
-		if (!IsValidCommand(action)) {
-			status = "Unknown action. You can see the options with: help";
+	if (!IsValidCommand(action)) {
+		status = "Unknown action. You can see the options with: help";
+	}
+	else {
+		if (Equals(action, "help")) {
+			status = buildHelp();
 		}
-		else {
-			if (Equals(action, "help")) {
+		// Verb actions
+		else if (IsCommandActions(action) && actions.size() > i+1) {
+			string next_action = actions[++i];
 
+			if (Equals(action, "move") || Equals(action, "go")) {
+				if (IsCommandMovement(next_action)) {
+					status = player->Move(next_action);
+				}
 			}
-			// Verb actions
-			else if (IsCommandActions(action)) {
-				if (actions.size() > i) {
-					string next_action = actions[++i];
-
-					if (Equals(action, "move") || Equals(action, "go")) {
-						if (IsCommandMovement(next_action)) {
-							status = player->Move(next_action);
+			else if (Equals(action, "look")) {
+				if (Equals(next_action, "room") || Equals(next_action, "around")) {
+					status = player->GetCurrentRoom()->GetInformation();
+				}
+				else if (Equals(next_action, "path") || Equals(next_action, "paths")) {
+					status = player->GetCurrentRoom()->GetNeighbors();
+				}
+				else if (Equals(next_action, "inventory") || Equals(next_action, "items")) {
+					status = player->GetInventoryItemsNames();
+				}
+				/*else if (itemname) {
+					ITEM_DETAILS
+				}*/
+			}
+			else if (Equals(action, "open")) {
+				if (Equals(next_action, "inventory") || Equals(next_action, "items")) {
+					status = player->GetInventoryItemsNames();
+				}
+				else if (Equals(next_action, "chest")) {
+					if (player->GetCurrentRoom()->ContainsEntity(next_action)) {
+						Entity* e = (player->GetCurrentRoom()->FindEntity(next_action));
+						if (e->GetType() == EntityType::ITEM) {
+							Item* item = static_cast<Item*>(e);
+							if (item->itemType == ItemType::CONTAINER) {
+								Chest* chest = static_cast<Chest*>(item);
+								status = chest->GetInformation();
+							}
 						}
 					}
-					else if (Equals(action, "look")) {
-						if (Equals(next_action, "room") || Equals(next_action, "around")) {
-							status = player->GetCurrentRoom()->GetContainsEntitiesInfo();
-						}
-						else if (Equals(next_action, "path") || Equals(next_action, "paths")) {
-							status = player->GetCurrentRoom()->GetNeighbors();
-						}
-						else if (Equals(next_action, "inventory") || Equals(next_action, "items")) {
-							status = player->GetInventoryItemsNames();
-						}
-						/*else if (itemname) {
-							ITEM_DETAILS
-						}*/
-					}
-					else if (Equals(action, "open")) {
-						if (Equals(next_action, "inventory") || Equals(next_action, "items")) {
-							status = player->GetInventoryItemsNames();
-						}
-						else if (Equals(next_action, "chest")) {
-							// TODO
-						}
-					}
-					else if (Equals(action, "use")) {
-						// TODO: item
-					}
-					else if (Equals(action, "pick") || Equals(action, "take")) {
-						// TODO: item
-					}
-					else if (Equals(action, "drop")) {
-						// TODO: item
+					else {
+						status = "The current room doesn't contain " + next_action;
 					}
 				}
 			}
-
-			// Entities
-			else if (Equals(action, "room") || Equals(action, "around")) {
-				status = player->GetCurrentRoom()->GetContainsEntitiesInfo();
+			else if (Equals(action, "use")) {
+				// TODO: item
 			}
-			else if (Equals(action, "path") || Equals(action, "paths")) {
-				status = player->GetCurrentRoom()->GetNeighbors();
+			else if (Equals(action, "pick") || Equals(action, "take")) {
+				if (Equals(next_action, "items")) {
+					if (actions.size() > i + 2) {
+						string action3 = actions[++i], action4 = actions[++i];
+						if (Equals(action3, "from") && Equals(action4, "chest")) {
+							if (player->GetCurrentRoom()->ContainsEntity(action4)) {
+								Entity* e = (player->GetCurrentRoom()->FindEntity(action4));
+								if (e->GetType() == EntityType::ITEM) {
+									Item* item = static_cast<Item*>(e);
+									if (item->itemType == ItemType::CONTAINER) {
+										Chest* chest = static_cast<Chest*>(item);
+										status = chest->PickContents(player);
+									}
+								}
+							}
+							else {
+								status = "The current room doesn't contain " + action4;
+							}
+						}
+					}
+				}
+				// TODO: item
 			}
-			else if (Equals(action, "inventory") || Equals(action, "items")) {
-				status = player->GetInventoryItemsNames();
-			}
-			/*else if (itemname) {
-				ITEM_DETAILS
-			}*/
-			else if (IsCommandMovement(action)) {
-				status = player->Move(action);
+			else if (Equals(action, "drop")) {
+				// TODO: item
 			}
 		}
-	//}
 
-	//actions.erase(actions.begin());
+		// Entities
+		else if (Equals(action, "room") || Equals(action, "around") || Equals(action, "look")) {
+			status = player->GetCurrentRoom()->GetInformation();
+		}
+		else if (Equals(action, "path") || Equals(action, "paths")) {
+			status = player->GetCurrentRoom()->GetNeighbors();
+		}
+		else if (Equals(action, "inventory") || Equals(action, "items")) {
+			status = player->GetInventoryItemsNames();
+		}
+		/*else if (itemname) {
+			ITEM_DETAILS
+		}*/
+		else if (IsCommandMovement(action)) {
+			status = player->Move(action);
+		}
+	}
+
 	return status;
 }
 
 void World::SetupWorld() {
 	// Actions list
 	commandActions = {"help", "move", "go", "look", "open", "use", "pick", "take", "drop"};
-	commandObjectives = {"room", "around", "path", "paths" "inventory", "items"};
+	commandObjectives = {"room", "around", "path", "paths", "inventory", "items"};
 	commandMovements = {"north", "south", "east", "west", "n", "s", "e", "w"};
 
 	// Rooms
@@ -144,12 +165,22 @@ void World::SetupWorld() {
 	Creature* stoneCreature = new Creature("Creature statue", "A strange statue of a creature resembling a big bird. You can feel the piercing gaze on its eyes", room8);
 	
 	// Items
-	Chest* chest1 = new Chest("Chest", "An ancient wooden chest. It's a miracle it has survived, given its poor condition", room4);
-	Item* item1 = new Item("Yellow potion", "A potion with yellow glow. Its label is mangled but you can read something abou stone", chest1, ItemType::ITEM);
-	Item* item2 = new Item("Lit torch", "A burning torch. Useful to brighten up your path", room6, ItemType::ITEM);
+	Chest* chest1 = new Chest("chest", "An ancient wooden chest. It's a miracle it has survived, given its poor condition", room4);
+	Item* item1 = new Item("potion", "A potion with yellow glow. Its label is mangled but you can read something abou stone", chest1, ItemType::ITEM);
+	Item* item2 = new Item("torch", "A burning torch. Useful to brighten up your path", room6, ItemType::ITEM);
 
 	// Story?
 
+	vector<string> v{ "around" };
+	cout << "\n" << Run(v) << "\n";
+}
+
+string World::buildHelp() {
+	ostringstream oss;
+
+	oss << "Commands that can be executed:";
+
+	return oss.str();
 }
 
 bool World::IsValidCommand(string& command) {

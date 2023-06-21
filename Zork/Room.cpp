@@ -26,10 +26,10 @@ void Room::SetNeighbors(Room* ptrNorth, Room* ptrSouth, Room* ptrEast, Room* ptr
 	ptrNeighborWest = ptrWest;
 }
 
-string Room::GetNeighbors() {
+string Room::GetNeighbors() const {
 	ostringstream oss;
 
-	oss << "From " << name << " you can go to: ";
+	oss << "\nFrom " << name << " you can go to: ";
 	if (ptrNeighborNorth != nullptr) { oss << "\n\t- North"; }
 	if (ptrNeighborSouth != nullptr) { oss << "\n\t- South"; }
 	if (ptrNeighborEast != nullptr) { oss << "\n\t- East"; }
@@ -68,19 +68,38 @@ bool Room::CanContainEntities() const {
 string Room::GetInformation() const {
 	ostringstream oss;
 
-	oss << "Room " << name << ": " << description;
+	oss << "\n" << name << "\n--------------------\n" << description << "\n";
 	if (contains.size() > 0) {
-		oss << "\n\tContains entities:";
+		bool first = true;
 		for (Entity* e : contains) {
-			oss << "\n\t- " << e->GetName();
+			if (e->GetType() == EntityType::ITEM) {
+				if (first) {
+					first = !first;
+					oss << "\nContains items:";
+				}
+				oss << "\n\t- " << e->GetName();
+			}
+		}
+		if (!first) {
+			oss << "\n";
+		}
+
+		first = true;
+		for (Entity* e : contains) {
+			if (e->GetType() == EntityType::CREATURE) {
+				if (first) {
+					first = !first;
+					oss << "\nContains creatures:";
+				}
+				oss << "\n\t- " << e->GetName();
+			}
+		}
+		if (!first) {
+			oss << "\n";
 		}
 	}
-
+	oss << GetNeighbors();
 	return oss.str();
-}
-
-string Room::GetContainsEntitiesInfo() const {
-	return ""; // TODO
 }
 
 // Global enum class conversions
