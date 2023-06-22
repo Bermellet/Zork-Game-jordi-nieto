@@ -1,8 +1,8 @@
 #include "World.h"
 
 World::World() {
-	this->finished = false;
-	this->gameOver = false;
+	this->_finished = false;
+	this->_gameOver = false;
 
 	SetupWorld();
 }
@@ -29,7 +29,7 @@ string World::Run(vector<string>& actions) {
 	}
 	else {
 		if (Equals(action, "help")) {
-			status = buildHelp();
+			status = BuildHelp();
 		}
 		// Verb actions
 		else if (IsCommandActions(action) && actions.size() > i+1) {
@@ -50,9 +50,16 @@ string World::Run(vector<string>& actions) {
 				else if (Equals(next_action, "inventory") || Equals(next_action, "items")) {
 					status = player->GetInventoryItemsNames();
 				}
-				/*else if (itemname) {
-					ITEM_DETAILS
-				}*/
+				// room objects
+				else if (player->GetCurrentRoom()->ContainsEntity(next_action)) {
+					Entity* e = (player->GetCurrentRoom()->FindEntity(next_action));
+					status = e->GetInformation();
+				}
+				// inventory
+				else if (player->ContainsEntity(next_action)) {
+					Entity* e = (player->FindEntity(next_action));
+					status = e->GetInformation();
+				}
 			}
 			else if (Equals(action, "open")) {
 				if (Equals(next_action, "inventory") || Equals(next_action, "items")) {
@@ -75,7 +82,16 @@ string World::Run(vector<string>& actions) {
 				}
 			}
 			else if (Equals(action, "use")) {
-				// TODO: item
+				if (player->ContainsEntity(next_action)) {
+					Entity* e = (player->FindEntity(next_action));
+					if (e->GetType() == EntityType::ITEM) {
+						Item* item = static_cast<Item*>(e);
+						status = item->Use(player, this);
+					}
+				}
+				else {
+					status = "Could not find the specified item: " + next_action;
+				}
 			}
 			else if (Equals(action, "pick") || Equals(action, "take")) {
 				if (Equals(next_action, "items")) {
@@ -98,14 +114,62 @@ string World::Run(vector<string>& actions) {
 						}
 					}
 				}
-				// TODO: item
+				else if (player->GetCurrentRoom()->ContainsEntity(next_action)) {
+					Entity* e = (player->GetCurrentRoom()->FindEntity(next_action));
+					if (e->GetType() == EntityType::ITEM) {
+						Item* item = static_cast<Item*>(e);
+						player->Pick(item);
+						status = "";
+					}
+					else {
+						status = "Could not find the specified item: " + next_action;
+					}
+				}
 			}
 			else if (Equals(action, "drop")) {
-				// TODO: item
+				if (player->ContainsEntity(next_action)) {
+					Entity* e = (player->FindEntity(next_action));
+					if (e->GetType() == EntityType::ITEM) {
+						Item* item = static_cast<Item*>(e);
+						if (actions.size() > i + 2) {
+							string action3 = actions[++i], action4 = actions[++i];
+							if (Equals(action3, "in") && Equals(action4, "chest")) {
+								if (player->GetCurrentRoom()->ContainsEntity(action4)) {
+									Entity* e = (player->GetCurrentRoom()->FindEntity(action4));
+									if (e->GetType() == EntityType::ITEM) {
+										Item* item = static_cast<Item*>(e);
+										if (item->itemType == ItemType::CONTAINER) {
+											Chest* chest = static_cast<Chest*>(item);
+											chest->AddEntity(item);
+											status = "";
+										}
+									}
+								}
+								else {
+									status = "The current room doesn't contain " + action4;
+								}
+							}
+							else {
+								player->Drop(item);
+								status = "";
+							}
+						}
+						else {
+							player->Drop(item);
+							status = "";
+						}
+					}
+				}
+				else {
+					status = "Could not find the specified item: " + next_action;
+				}
 			}
 		}
 
 		// Entities
+		else if (IsCommandMovement(action)) {
+			status = player->Move(action);
+		}
 		else if (Equals(action, "room") || Equals(action, "around") || Equals(action, "look")) {
 			status = player->GetCurrentRoom()->GetInformation();
 		}
@@ -115,11 +179,15 @@ string World::Run(vector<string>& actions) {
 		else if (Equals(action, "inventory") || Equals(action, "items")) {
 			status = player->GetInventoryItemsNames();
 		}
-		/*else if (itemname) {
-			ITEM_DETAILS
-		}*/
-		else if (IsCommandMovement(action)) {
-			status = player->Move(action);
+		// room objects
+		else if (player->GetCurrentRoom()->ContainsEntity(action)) {
+			Entity* e = (player->GetCurrentRoom()->FindEntity(action));
+			status = e->GetInformation();
+		}
+		// inventory
+		else if (player->ContainsEntity(action)) {
+			Entity* e = (player->FindEntity(action));
+			status = e->GetInformation();
 		}
 	}
 
@@ -162,7 +230,7 @@ void World::SetupWorld() {
 
 	// Player & Creatures
 	player = new Player("Player", "This is you", room1);
-	Creature* stoneCreature = new Creature("Creature statue", "A strange statue of a creature resembling a big bird. You can feel the piercing gaze on its eyes", room8);
+	Creature* stoneCreature = new Creature("creature statue", "A strange statue of a creature resembling a big bird. You can feel the piercing gaze on its eyes", room8);
 	
 	// Items
 	Chest* chest1 = new Chest("chest", "An ancient wooden chest. It's a miracle it has survived, given its poor condition", room4);
@@ -175,7 +243,7 @@ void World::SetupWorld() {
 	cout << "\n" << Run(v) << "\n";
 }
 
-string World::buildHelp() {
+string World::BuildHelp() {
 	ostringstream oss;
 
 	oss << "Commands that can be executed:";
@@ -199,4 +267,20 @@ bool World::IsCommandObjectives(string& command) {
 
 bool World::IsCommandMovement(string& command) {
 	return commandMovements.find(command) != commandMovements.end();
+}
+
+void World::SetFinished(bool value) {
+	_finished = value;
+}
+
+void World::SetGameOver(bool value) {
+	_gameOver = value;
+}
+
+bool World::finished() const {
+	return _finished;
+}
+
+bool World::gameOver() const {
+	return _gameOver;
 }

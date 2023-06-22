@@ -11,11 +11,11 @@ using namespace std;
 int main() {
 	World world;
 
-	char splitChar = ' ';
-
 	string userInput, result;
 	vector<string> tokens;
 	tokens.reserve(10);
+	
+	char splitChar = ' ';
 	bool running = true;
 
 	while (running) {
@@ -37,10 +37,17 @@ int main() {
 				break;
 			}
 			result = world.Run(tokens);
-			cout << result << endl;
+			cout << result << "\n\n";
 		}
 
 		tokens.clear();
+	}
+
+	if (world.gameOver()) {
+		cout << "\n\t\t GAME OVER \n\n";
+	}
+	else if (world.finished()) {
+		cout << "\n\n\t Congratulations! You have successfuly finished the game \n\n";
 	}
 
 }

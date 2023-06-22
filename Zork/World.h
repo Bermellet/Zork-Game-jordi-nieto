@@ -21,21 +21,18 @@ public:
 	~World();
 	string Run(vector<string>& actions);
 
+	void SetFinished(bool value);
+	void SetGameOver(bool value);
+	bool finished() const;
+	bool gameOver() const;
+
 private:
 	void SetupWorld();
-	void Look();
-	void Move();
-
-	string buildHelp();
+	string BuildHelp();
 	bool IsValidCommand(string& command);
 	bool IsCommandActions(string& command);
 	bool IsCommandObjectives(string& command);
 	bool IsCommandMovement(string& command);
-
-public:
-	bool finished;
-	bool gameOver;
-
 private:
 	list<Entity*> entities;
 	Player* player;
@@ -43,6 +40,9 @@ private:
 	set<string> commandActions;
 	set<string> commandObjectives;
 	set<string> commandMovements;
+
+	bool _finished;
+	bool _gameOver;
 };
 
 #endif // !WORLD_H

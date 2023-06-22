@@ -5,6 +5,8 @@
 #include <string>
 
 #include "Entity.h"
+#include "Player.h"
+#include "World.h"
 
 enum class ItemType {
 	ITEM,
@@ -16,6 +18,7 @@ class Item : public Entity
 public:
 	Item(string name, string description, Entity* containedBy, ItemType itemType);
 	~Item();
+	string Use(Player* player, World* world);
 	
 	virtual bool CanBePicked() const;
 
