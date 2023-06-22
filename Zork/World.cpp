@@ -96,7 +96,7 @@ string World::Run(vector<string>& actions) {
 									status = item->Use();
 									player->RemoveEntity(item); // Item used
 									Creature* creature = static_cast<Creature*>(e);
-									Creature* phoenix = new Creature("phoenix", "A beautiful bird with bright colors. Its feathers seems alive, showing a fire-like pattern", creature->GetCurrentRoom());
+									Creature* phoenix = new Creature("phoenix", "A beautiful bird with bright colors. Its feathers seem alive, showing a fire-like pattern", creature->GetCurrentRoom());
 									creature->GetCurrentRoom()->RemoveEntity(creature);
 									delete(creature);
 
@@ -237,7 +237,7 @@ void World::SetupWorld() {
 	Room* room5 = new Room("Forest", "Enormous pine trees seem to reach up the sky. There is a cave on the east");
 	Room* room6 = new Room("Cave entrance", "The cave is very dark. Luckily, there is a lit torch on the wall");
 	Room* room7 = new Room("Stalactites room", "The cave keeps descending into a room full of stalactites. Its humidity reflect dim reflections");
-	Room* room8 = new Room("Boss room", "The cave widens into an area full of green moss. Its fluorescent glow constrasts with a stone animal in the center of the room");
+	Room* room8 = new Room("Mossy cave", "The cave widens into an area full of green moss. Its fluorescent glow constrasts with a stone animal in the center of the room");
 
 	room1->SetNeighbors(nullptr, room2, nullptr, nullptr);
 	room2->SetNeighbors(room1, room5, nullptr, room3);
@@ -263,7 +263,7 @@ void World::SetupWorld() {
 	
 	// Items
 	Chest* chest1 = new Chest("chest", "An ancient wooden chest. It's a miracle it has survived, given its poor condition", room4);
-	Item* item1 = new Item("potion", "A potion with yellow glow. Its label is mangled but you can read something abou stone", chest1, ItemType::ITEM);
+	Item* item1 = new Item("potion", "A potion with yellow glow. Its label is mangled but you can read something about STONE", chest1, ItemType::ITEM);
 	Item* item2 = new Item("torch", "A burning torch. Useful to brighten up your path", room6, ItemType::ITEM);
 
 	// Story
@@ -283,7 +283,20 @@ void World::SetupWorld() {
 string World::BuildHelp() {
 	ostringstream oss;
 
-	oss << "Commands that can be executed:";
+	oss << "Commands that can be executed:"
+		<< "\n\thelp\n\t\t -> Shows the list of commands"
+		<< "\n\n\tmove / go [direction]"
+		<< "\n\t[direction]\n\t\t -> Moves the player in the said directions"
+		<< "\n\n\tlook [objectives]"
+		<< "\n\t[objectives]\n\t\t -> Shows information about the entity"
+		<< "\n\n\topen [inventory / items / chest]\n\t\t -> Shows the items contained on those entities"
+		<< "\n\tuse [itemName]\n\t\t -> Uses the item"
+		<< "\n\tpick / take [itemName]\n\t\t -> Picks the item from the current room"
+		<< "\n\tpick / take [items from chest]\n\t\t -> Pick the items contained inside a chest from the current room"
+		<< "\n\tdrop [itemName]\n\t\t -> Drops the item from the inventory to the current room"
+		<< "\n\tdrop [itemName in chest]\n\t\t -> Drops the item from the inventory to the chest in the current room"
+		<< "\n\n\t(Objectives):\n\t\troom / around\n\t\tpath / paths\n\t\tinventory / items\n\t\titemName"
+		<< "\n\n\t(Directions):\n\t\tnorth / n\n\t\tsouth / s\n\t\teast / e\n\t\twest / w";
 
 	return oss.str();
 }
