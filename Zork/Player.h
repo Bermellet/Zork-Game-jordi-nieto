@@ -3,7 +3,6 @@
 #define PLAYER_H
 
 #include "Creature.h"
-#include "Room.h"
 
 class Player : public Creature
 {
