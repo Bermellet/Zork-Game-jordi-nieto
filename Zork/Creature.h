@@ -15,7 +15,6 @@ class Creature : public Entity
 {
 public:
 	Creature(string name, string description, Room* currentRoom);
-	~Creature();
 	void Pick(Item* item);
 	void Drop(Item* item);
 	bool isAlive();

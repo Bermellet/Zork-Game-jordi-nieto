@@ -41,13 +41,18 @@ int main() {
 		}
 
 		tokens.clear();
+		running = !world.gameOver() && !world.finished();
 	}
 
 	if (world.gameOver()) {
 		cout << "\n\t\t GAME OVER \n\n";
+		getline(cin, userInput);
 	}
 	else if (world.finished()) {
-		cout << "\n\n\t Congratulations! You have successfuly finished the game \n\n";
+		getline(cin, userInput);
+		cout << "-----------------------------------\n"
+			<< "\n\t Congratulations! You have successfuly finished the game \n\n";
+		getline(cin, userInput);
 	}
 
 }

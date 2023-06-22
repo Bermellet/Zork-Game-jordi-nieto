@@ -6,10 +6,6 @@ Room::Room(const string& name = string(), const string& description = string()) 
 	Setup();
 }
 
-Room::~Room() {
-
-}
-
 void Room::Setup() {
 	entityType = EntityType::ROOM;
 

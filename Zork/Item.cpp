@@ -7,10 +7,6 @@ Item::Item(string name, string description, Entity* containedBy, ItemType itemTy
 	this->itemType = itemType;
 }
 
-Item::~Item() {
-
-}
-
 ItemType Item::GetItemType() const {
 	return this->itemType;
 }

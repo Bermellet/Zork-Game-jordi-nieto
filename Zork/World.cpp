@@ -14,9 +14,6 @@ World::~World() {
 			delete entity;
 		}
 	}
-	if (player != nullptr) {
-		delete player;
-	}
 }
 
 string World::Run(vector<string>& actions) {
@@ -82,39 +79,44 @@ string World::Run(vector<string>& actions) {
 				}
 			}
 			else if (Equals(action, "use")) {
+				status = "Could not find the specified item: " + next_action;
 				if (player->ContainsEntity(next_action)) {
 					Entity* e = (player->FindEntity(next_action));
 					if (e->GetType() == EntityType::ITEM) {
+						status = "Could not use " + next_action;
 						Item* item = static_cast<Item*>(e);
-						string creatureStatue = "creature statue";
-						if (player->GetCurrentRoom()->ContainsEntity(creatureStatue)) {
-							Entity* e = player->GetCurrentRoom()->FindEntity(creatureStatue);
-							if (e->GetType() == EntityType::CREATURE) {
-								status = item->Use();
-								player->RemoveEntity(item); // Item used
-								Creature* creature = static_cast<Creature*>(e);
-								Creature* phoenix = new Creature("phoenix", "A beautiful bird with bright colors. Its feathers seems alive, showing a fire-like pattern", creature->GetCurrentRoom());
-								creature->GetCurrentRoom()->RemoveEntity(creature);
-								delete(creature);
+						if (next_action == "torch") {
+							status = item->Use();
+						}
+						else if (next_action == "potion") {
+							string creatureStatue = "creature statue";
+							if (player->GetCurrentRoom()->ContainsEntity(creatureStatue)) {
+								Entity* e = player->GetCurrentRoom()->FindEntity(creatureStatue);
+								if (e->GetType() == EntityType::CREATURE) {
+									status = item->Use();
+									player->RemoveEntity(item); // Item used
+									Creature* creature = static_cast<Creature*>(e);
+									Creature* phoenix = new Creature("phoenix", "A beautiful bird with bright colors. Its feathers seems alive, showing a fire-like pattern", creature->GetCurrentRoom());
+									creature->GetCurrentRoom()->RemoveEntity(creature);
+									delete(creature);
 
-								// End game
-								this->SetFinished(true);
-								ostringstream oss;
-								oss << status
-									<< "\n\nYou drop the potion's contents on the stone statue. Suddenly the statue begins to crack."
-									<< "\nStarting from its head, the cracks begin to shine as the effect expands through the whole statue."
-									<< "\nSuperficial stone pieces fall apart from the statue, showing a truly alive bird."
-									<< "\n You found the " << phoenix->GetName() << " - " << phoenix->GetDescription()
-									<< "\n\nThe creature slowly approaches you, half unsure, half thankful."
-									<< "\nYou stretch you hand towards the bird. Its touch creates an impulse through all your body."
-									<< "\n\n\tNow... Now you remember";
-								status = oss.str();
+									// End game
+									this->SetFinished(true);
+									ostringstream oss;
+									oss << "\n-----------------------------------\n\n"
+										<< status
+										<< "\n\nYou drop the potion's contents on the stone statue. Suddenly the statue begins to crack."
+										<< "\nStarting from its head, the cracks begin to shine as the effect expands through the whole statue."
+										<< "\nSuperficial stone pieces fall apart from the statue, showing a truly alive bird."
+										<< "\n\nYou found the " << phoenix->GetName() << " - " << phoenix->GetDescription()
+										<< "\n\nThe creature slowly approaches you, half unsure, half thankful."
+										<< "\nYou stretch you hand towards the bird. Its touch creates an impulse through all your body."
+										<< "\n\n\tNow... Now you remember";
+									status = oss.str();
+								}
 							}
 						}
 					}
-				}
-				else {
-					status = "Could not find the specified item: " + next_action;
 				}
 			}
 			else if (Equals(action, "pick") || Equals(action, "take")) {
@@ -155,17 +157,20 @@ string World::Run(vector<string>& actions) {
 					Entity* e = (player->FindEntity(next_action));
 					if (e->GetType() == EntityType::ITEM) {
 						Item* item = static_cast<Item*>(e);
-						if (actions.size() > i + 2) {
-							string action3 = actions[++i], action4 = actions[++i];
-							if (Equals(action3, "in") && Equals(action4, "chest")) {
-								if (player->GetCurrentRoom()->ContainsEntity(action4)) {
-									Entity* e = (player->GetCurrentRoom()->FindEntity(action4));
+						if (actions.size() > i + 1) {
+							string action3 = actions[++i], action4 = "", chest = "chest";
+							if (actions.size() > i + 1) {
+								action4 = actions[++i];
+							}
+							if (Equals(action3, chest) || Equals(action4, chest)) {
+								if (player->GetCurrentRoom()->ContainsEntity(chest)) {
+									Entity* e = (player->GetCurrentRoom()->FindEntity(chest));
 									if (e->GetType() == EntityType::ITEM) {
-										Item* item = static_cast<Item*>(e);
-										if (item->GetItemType() == ItemType::CONTAINER) {
-											Chest* chest = static_cast<Chest*>(item);
+										Item* chestItem = static_cast<Item*>(e);
+										if (chestItem->GetItemType() == ItemType::CONTAINER) {
+											Chest* chest = static_cast<Chest*>(chestItem);
 											chest->AddEntity(item);
-											status = "";
+											status = item->GetName() + " has been dropped inside the chest";
 										}
 									}
 								}
@@ -269,7 +274,7 @@ void World::SetupWorld() {
 	cout << "You wake up in the middle of the forest, your head throbbing with pain. It must have been a hard hit on the head."
 		<< "\nEven though you can't remember much, something is clear: you had something really important to do."
 		<< "\n\nJust... What ?"
-		<< "\n-----------------------------------\n\n";
+		<< "\n\n-----------------------------------";
 
 	vector<string> v{ "around" };
 	cout << "\n" << Run(v) << "\n\n";

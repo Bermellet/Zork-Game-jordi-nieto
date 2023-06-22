@@ -6,10 +6,6 @@ Chest::Chest(string name, string description, Entity* containedBy) :
 
 }
 
-Chest::~Chest() {
-
-}
-
 string Chest::PickContents(Creature* picker) {
 	list<Entity*>::iterator it = contains.begin();
 	while (it != contains.end()) {

@@ -9,7 +9,6 @@ class Chest : public Item
 {
 public:
 	Chest(string name, string description, Entity* containedBy);
-	~Chest();
 	string PickContents(Creature* picker);
 
 	bool CanContainEntities() const override;

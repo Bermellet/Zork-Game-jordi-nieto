@@ -12,7 +12,9 @@ Entity::Entity(const string& name = string(), const string& description = string
 
 Entity::~Entity() {
 	for (Entity* e : contains) {
-		delete e;
+		if (e != nullptr) {
+			delete e;
+		}
 	}
 }
 

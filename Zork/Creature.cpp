@@ -9,14 +9,6 @@ Creature::Creature(string name, string description, Room* currentRoom) :
 	this->entityType = EntityType::CREATURE;
 }
 
-Creature::~Creature() {
-	for (Entity* e: contains) {
-		if (e != nullptr) {
-			delete e;
-		}
-	}
-}
-
 void Creature::Pick(Item* item) {
 	if (item->CanBePicked()) {
 		AddEntity(item);
